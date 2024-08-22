@@ -44,7 +44,18 @@ const Login: React.FC = () => {
             login(accesstoken, refreshToken);
             navigate('/');
         } catch (error: any) {
-            if (error?.response?.status === 404) {
+            if (error.code == 'ERR_NETWORK') {
+                toast.error('네트워크를 확인하세요.', {
+                    position: 'top-center',
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: 'colored',
+                });
+            } else if (error?.response?.status === 404) {
                 toast.error('회원가입을 진행해 주세요.', {
                     position: 'top-center',
                     autoClose: 3000,
