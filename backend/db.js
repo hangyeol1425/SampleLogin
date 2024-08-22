@@ -11,7 +11,7 @@ const port = process.env.DATABASE_PORT
 const sequelize = new Sequelize(database, user, password, {
     host: host,
     dialect: dialect,
-    port: 3306,
+    port: port,
 });
 
 sequelize.authenticate()
