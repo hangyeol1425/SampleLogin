@@ -1,3 +1,5 @@
+export type ThemeType = 'light' | 'dark';
+
 export const theme = {
     light: {
         background: '#f7f9fc',      // 페이지 전체 배경

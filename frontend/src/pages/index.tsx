@@ -1,13 +1,16 @@
 import { Link } from "react-router-dom";
-import { useAuth } from "../context/auth-context";
-import { useTheme } from "../context/thema-context";
+import { useAuth } from "../contexts/auth-context";
+import { useTheme } from "../contexts/thema-context";
+import { useTranslation } from 'react-i18next';
 
 const Home = () => {
+    const { t } = useTranslation();
 
-    const { toggleTheme } = useTheme();
+    const { toggleTheme, themeType } = useTheme();
 
     const link = [
-        { link: "/users", name: "로그인/회원가입" }
+        { link: "/users", name: `${t('login')}/${t('register')}` },
+        { link: "/project", name: `${t('project')}`}
     ]
 
     const { isAuthenticated } = useAuth();
@@ -21,10 +24,10 @@ const Home = () => {
                     </li>
                 ))}
                 { isAuthenticated && (
-                    <li><Link to="/mypage">마이페이지</Link></li>
+                    <li><Link to="/mypage">{t('mypage')}</Link></li>
                 )}
                 <li>
-                    <button onClick={toggleTheme}>토글테마</button>
+                    <button onClick={toggleTheme}>{themeType == 'dark' ? `${t('light_mode')}` : `${t('dark_mode')}`}</button>
                 </li>
             </ul>
         </div>

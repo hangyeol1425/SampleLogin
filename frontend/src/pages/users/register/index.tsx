@@ -6,8 +6,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useSpring, animated } from 'react-spring';
 import { useValidation } from '../useValidation';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const Login: React.FC = () => {
+    const { t } = useTranslation();
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [name, setName] = useState<string>('');
@@ -44,8 +46,19 @@ const Login: React.FC = () => {
             });
             if (result) navigate('/users/login');
         } catch (error: any) {
-            if (error?.response?.status === 409) {
-                toast.error('이미 가입된 이메일입니다.', {
+            if (error.code == 'ERR_NETWORK') {
+                toast.error(t('network_error'), {
+                    position: 'top-center',
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: 'colored',
+                });
+            } else if (error?.response?.status === 409) {
+                toast.error(t('email_already_registered'), {
                     position: 'top-center',
                     autoClose: 3000,
                     hideProgressBar: false,
@@ -56,7 +69,7 @@ const Login: React.FC = () => {
                     theme: 'colored',
                 });
             } else {
-                toast.error('예기치 못한 오류가 발생했습니다.', {
+                toast.error(t('unexpected_error'), {
                     position: 'top-center',
                     autoClose: 3000,
                     hideProgressBar: false,
@@ -126,8 +139,8 @@ const Login: React.FC = () => {
                         value={email}
                         onKeyDown={handleEmailEnterPress}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="이메일을 입력하세요"
-                        aria-label="이메일 입력"
+                        placeholder={t('prompt_email')}
+                        aria-label={t('label_email')}
                         aria-invalid={!!emailError && email.trim() !== ''}
                         aria-describedby={emailError ? 'email-error' : undefined}
                         disabled={isSubmitting}
@@ -147,8 +160,8 @@ const Login: React.FC = () => {
                             value={password}
                             onKeyDown={handlePasswordEnterPress}
                             onChange={(e) => setPassword(e.target.value)}
-                            placeholder="비밀번호를 입력하세요"
-                            aria-label="비밀번호 입력"
+                            placeholder={t('prompt_password')}
+                            aria-label={t('label_password')}
                             aria-invalid={!!passwordError && password.trim() !== ''}
                             aria-describedby={passwordError ? 'password-error' : undefined}
                             disabled={isSubmitting}
@@ -169,8 +182,8 @@ const Login: React.FC = () => {
                             value={name}
                             onKeyDown={handleNameEnterPress}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder='이름을 입력하세요'
-                            aria-label='이름 입력'
+                            placeholder={t('prompt_name')}
+                            aria-label={t('label_name')}
                             aria-invalid={!!nameError && name.trim() !== ''}
                             aria-describedby={nameError ? 'name-error' : undefined}
                             disabled={isSubmitting}
@@ -188,12 +201,12 @@ const Login: React.FC = () => {
                     onClick={handleSubmit}
                     disabled={isSubmitting}
                 >
-                    {isSubmitting ? '처리 중...' : '회원가입'}
+                    {isSubmitting ? t('status_processing') : t('register')}
                 </SubmitButton>
             </InputContainer>
             <StyledLinkContainer>
-                <StyledLink to="/users/login">로그인</StyledLink>
-                <StyledLink to="/">홈으로</StyledLink>
+                <StyledLink to="/users/login">{t('login')}</StyledLink>
+                <StyledLink to="/">{t('go_to_home')}</StyledLink>
             </StyledLinkContainer>
             <ToastContainer />
         </Container>

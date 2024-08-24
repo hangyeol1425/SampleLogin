@@ -6,10 +6,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useSpring, animated } from 'react-spring';
 import { useValidation } from '../useValidation';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../context/auth-context';
+import { useAuth } from '../../../contexts/auth-context';
+import { useTranslation } from 'react-i18next';
 
 const Login: React.FC = () => {
     const { login } = useAuth();
+    const { t } = useTranslation();
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [showPasswordInput, setShowPasswordInput] = useState<boolean>(false);
@@ -45,7 +47,7 @@ const Login: React.FC = () => {
             navigate('/');
         } catch (error: any) {
             if (error.code == 'ERR_NETWORK') {
-                toast.error('네트워크를 확인하세요.', {
+                toast.error(t('network_error'), {
                     position: 'top-center',
                     autoClose: 3000,
                     hideProgressBar: false,
@@ -56,7 +58,7 @@ const Login: React.FC = () => {
                     theme: 'colored',
                 });
             } else if (error?.response?.status === 404) {
-                toast.error('회원가입을 진행해 주세요.', {
+                toast.error(t('prompt_sign_up'), {
                     position: 'top-center',
                     autoClose: 3000,
                     hideProgressBar: false,
@@ -67,7 +69,7 @@ const Login: React.FC = () => {
                     theme: 'colored',
                 });
             } else {
-                toast.error('예기치 못한 오류가 발생했습니다.', {
+                toast.error(t('unexpected_error'), {
                     position: 'top-center',
                     autoClose: 3000,
                     hideProgressBar: false,
@@ -124,8 +126,8 @@ const Login: React.FC = () => {
                         value={email}
                         onKeyDown={handleEmailEnterPress}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="이메일을 입력하세요"
-                        aria-label="이메일 입력"
+                        placeholder={t('prompt_email')}
+                        aria-label={t('label_email')}
                         aria-invalid={!!emailError && email.trim() !== ''}
                         aria-describedby={emailError ? 'email-error' : undefined}
                         disabled={isSubmitting}
@@ -145,8 +147,8 @@ const Login: React.FC = () => {
                             value={password}
                             onKeyDown={handlePasswordEnterPress}
                             onChange={(e) => setPassword(e.target.value)}
-                            placeholder="비밀번호를 입력하세요"
-                            aria-label="비밀번호 입력"
+                            placeholder={t('prompt_password')}
+                            aria-label={t('label_password')}
                             aria-invalid={!!passwordError && password.trim() !== ''}
                             aria-describedby={passwordError ? 'password-error' : undefined}
                             disabled={isSubmitting}
@@ -164,12 +166,12 @@ const Login: React.FC = () => {
                     onClick={handleSubmit}
                     disabled={isSubmitting}
                 >
-                    {isSubmitting ? '처리 중...' : '로그인'}
+                    {isSubmitting ? t('status_processing') : t('login')}
                 </SubmitButton>
             </InputContainer>
             <StyledLinkContainer>
-                <StyledLink to="/users/register">회원가입</StyledLink>
-                <StyledLink to="/">홈으로</StyledLink>
+                <StyledLink to="/users/register">{t('register')}</StyledLink>
+                <StyledLink to="/">{t('go_to_home')}</StyledLink>
             </StyledLinkContainer>
             <ToastContainer />
         </Container>

@@ -1,15 +1,13 @@
-import { ReactNode } from 'react';
-import { theme } from './theme';
-
-type ThemeType = typeof theme.light | typeof theme.dark;
-
+import { ThemeType } from "./theme";
 export interface ThemeContextProps {
-    theme: ThemeType;
+    theme: any;
     toggleTheme: () => void;
+    themeType : ThemeType,
 }
 
+// ThemeProvider의 props 타입
 export interface ThemeProviderProps {
-    children: ReactNode;
+    children: React.ReactNode;
 }
 
 export interface Todo {

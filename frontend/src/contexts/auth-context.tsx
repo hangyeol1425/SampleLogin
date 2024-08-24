@@ -42,7 +42,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setRefreshToken(null);
             localStorage.removeItem('refreshToken');
         } catch (error) {
-            console.error('로그아웃 실패 : ' + error);
+            console.error(error);
             throw new Error('로그아웃에 실패했습니다.');
         }
     };

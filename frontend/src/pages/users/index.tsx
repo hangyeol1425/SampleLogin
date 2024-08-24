@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
-import { useAuth } from "../../context/auth-context";
+import { useAuth } from "../../contexts/auth-context";
+import { useTranslation } from 'react-i18next';
 
 const User = () => {
+    const { t } = useTranslation();
     const { isAuthenticated } = useAuth();
     return (
         <div>
@@ -10,16 +12,16 @@ const User = () => {
                 {!isAuthenticated ? (
                     <>
                         <li>
-                            <Link to='/users/login'>로그인</Link>
+                            <Link to='/users/login'>{t('login')}</Link>
                         </li>
                         <li>
-                            <Link to='/users/register'>회원가입</Link>
+                            <Link to='/users/register'>{t('register')}</Link>
                         </li>
                     </>
                 ) : (
                     <>
-                        <li>이미 로그인 중입니다.</li>
-                        <li>My Page로 가서 로그아웃 {"->"}<Link to="/mypage">마이페이지</Link></li>
+                        <li>{t('isAuthenticated_massage')}</li>
+                        <li>{t('go_to_my_page_and_logout')} {"->"}<Link to="/mypage">{t('mypage')}</Link></li>
                     </>
                 )}
             </ul>
