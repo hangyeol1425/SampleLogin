@@ -3,8 +3,10 @@
     "undefined": "이름없음",
     "dark_mode": "다크모드",
     "light_mode": "라이트모드",
-    "go_to_home": "홈으로",
+    "link": "링크",
+    "link_collection": "링크 모음",
     "home": "홈",
+    "go_to_home": "홈으로",
     "mypage": "마이페이지",
     "go_to_my_page_and_logout": "My Page로 가서 로그아웃",
     
@@ -32,6 +34,7 @@
     "network_error" : "네트워크를 확인하세요.",
     "prompt_sign_up": "회원가입을 진행해 주세요.",
     "email_already_registered": "이미 가입된 이메일입니다.",
+    "verify_credentials": "비밀번호를 다시 확인하세요.",
     "unexpected_error": "예기치 못한 오류가 발생했습니다.",
     
     "__coment4__": "---Project 관련---",

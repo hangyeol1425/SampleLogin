@@ -1,4 +1,4 @@
-import axiosInstance from '../axiosInstance';
+import axiosInstance from '../api';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 interface AuthContextType {

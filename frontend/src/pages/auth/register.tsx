@@ -1,32 +1,33 @@
 import React, { useRef, useState, useCallback } from 'react';
-import axiosInstance from '../../../axiosInstance';
+import axiosInstance from '../../api';
 import styled from 'styled-components';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSpring, animated } from 'react-spring';
-import { useValidation } from '../useValidation';
+import { useValidation } from './useValidation';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/auth-context';
 import { useTranslation } from 'react-i18next';
 
 const Login: React.FC = () => {
-    const { login } = useAuth();
     const { t } = useTranslation();
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [name, setName] = useState<string>('');
     const [showPasswordInput, setShowPasswordInput] = useState<boolean>(false);
+    const [showNameInput, setShowNameInput] = useState<boolean>(false);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-    const passwordInputRef = useRef<HTMLInputElement>(null);
     const emailInputRef = useRef<HTMLInputElement>(null);
+    const passwordInputRef = useRef<HTMLInputElement>(null);
+    const nameInputRef = useRef<HTMLInputElement>(null);
 
     const navigate = useNavigate();
-    const { emailError, passwordError } = useValidation(email, password, '');
+    const { emailError, passwordError, nameError } = useValidation(email, password, name);
 
     const handleSubmit = useCallback(async () => {
         if (isSubmitting) return;
 
-        if (emailError || passwordError || email.trim() === '' || password.trim() === '') {
+        if (emailError || passwordError || nameError || email.trim() === '' || password.trim() === '' || password.trim() === '') {
             emailInputRef.current?.focus();
             return;
         }
@@ -35,16 +36,15 @@ const Login: React.FC = () => {
 
         emailInputRef.current?.blur();
         passwordInputRef.current?.blur();
+        nameInputRef.current?.blur();
 
         try {
-            const response = await axiosInstance.post('/auth/login', {
-                email,
-                password,
+            const result = await axiosInstance.post('/auth/register', {
+                username: name,
+                email: email,
+                password: password,
             });
-
-            const { accesstoken, refreshToken } = response.data;
-            login(accesstoken, refreshToken);
-            navigate('/');
+            if (result) navigate('/auth/login');
         } catch (error: any) {
             if (error.code == 'ERR_NETWORK') {
                 toast.error(t('network_error'), {
@@ -57,8 +57,8 @@ const Login: React.FC = () => {
                     progress: undefined,
                     theme: 'colored',
                 });
-            } else if (error?.response?.status === 404) {
-                toast.error(t('prompt_sign_up'), {
+            } else if (error?.response?.status === 409) {
+                toast.error(t('email_already_registered'), {
                     position: 'top-center',
                     autoClose: 3000,
                     hideProgressBar: false,
@@ -84,7 +84,7 @@ const Login: React.FC = () => {
             await new Promise((resolve) => setTimeout(resolve, 500));
             setIsSubmitting(false);
         }
-    }, [email, password, emailError, passwordError, isSubmitting, navigate]);
+    }, [email, password, name, emailError, passwordError, nameError, isSubmitting, navigate]);
 
     const handleEmailEnterPress = useCallback(
         (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -104,11 +104,24 @@ const Login: React.FC = () => {
             if (event.key === 'Enter') {
                 event.preventDefault();
                 if (!passwordError && password.trim() !== '') {
+                    setShowNameInput(true);
+                    setTimeout(() => nameInputRef.current?.focus(), 100);
+                }
+            }
+        },
+        [passwordError, password]
+    );
+
+    const handleNameEnterPress = useCallback(
+        (event: React.KeyboardEvent<HTMLInputElement>) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                if (!nameError && name.trim() !== '') {
                     handleSubmit();
                 }
             }
         },
-        [passwordError, password, handleSubmit]
+        [nameError, name, handleSubmit]
     );
 
     const submitButtonSpring = useSpring({
@@ -161,16 +174,38 @@ const Login: React.FC = () => {
                     </FieldContainer>
                 )}
 
+                {showNameInput && (
+                    <FieldContainer>
+                        <Input
+                            ref={nameInputRef}
+                            type='text'
+                            value={name}
+                            onKeyDown={handleNameEnterPress}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder={t('prompt_name')}
+                            aria-label={t('label_name')}
+                            aria-invalid={!!nameError && name.trim() !== ''}
+                            aria-describedby={nameError ? 'name-error' : undefined}
+                            disabled={isSubmitting}
+                        />
+                        {nameError && name.trim() !== '' && (
+                            <ErrorMessage id='name-error'>
+                                {nameError}
+                            </ErrorMessage>
+                        )}
+                    </FieldContainer>
+                )}
+
                 <SubmitButton
                     style={submitButtonSpring}
                     onClick={handleSubmit}
                     disabled={isSubmitting}
                 >
-                    {isSubmitting ? t('status_processing') : t('login')}
+                    {isSubmitting ? t('status_processing') : t('register')}
                 </SubmitButton>
             </InputContainer>
             <StyledLinkContainer>
-                <StyledLink to="/users/register">{t('register')}</StyledLink>
+                <StyledLink to="/auth/login">{t('login')}</StyledLink>
                 <StyledLink to="/">{t('go_to_home')}</StyledLink>
             </StyledLinkContainer>
             <ToastContainer />

@@ -33,7 +33,6 @@ exports.register = async (req, res) => {
         const findUser = await User.findOne({ where: { email } })
 
         if(findUser) {
-            console.log('여기에 걸려야하는데 왜 걸리냐 ㅅㅂ')
             res.status(409).json({error : "User with this email already exists."});
         }
 

@@ -12,10 +12,10 @@ const User = () => {
                 {!isAuthenticated ? (
                     <>
                         <li>
-                            <Link to='/users/login'>{t('login')}</Link>
+                            <Link to='/auth/login'>{t('login')}</Link>
                         </li>
                         <li>
-                            <Link to='/users/register'>{t('register')}</Link>
+                            <Link to='/auth/register'>{t('register')}</Link>
                         </li>
                     </>
                 ) : (
